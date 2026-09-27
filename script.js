@@ -81,623 +81,801 @@
   });
 })();
 
+/* ==========================================================
+   BAR EASY
+   PURE JAVASCRIPT 3D FLIP BOOK
+========================================================== */
 
-/* =====================================================
-   BAR EASY MENU BOOK
-===================================================== */
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-document.addEventListener("DOMContentLoaded", function () {
+        const book =
+            document.getElementById(
+                "easyBook"
+            );
 
-    const menuBook =
-        document.getElementById("menuBook");
+        const prevButton =
+            document.getElementById(
+                "easyBookPrev"
+            );
 
-    const prevButton =
-        document.getElementById("menuPrev");
+        const nextButton =
+            document.getElementById(
+                "easyBookNext"
+            );
 
-    const nextButton =
-        document.getElementById("menuNext");
+        const pageStatus =
+            document.getElementById(
+                "easyBookPage"
+            );
 
-    const pageNumber =
-        document.getElementById("menuPageNumber");
-
-    const openBookButton =
-        document.getElementById("menuOpenBook");
-
-
-    /* 如果這個頁面沒有 Menu Book，就不要執行 */
-    if (
-        !menuBook ||
-        !prevButton ||
-        !nextButton ||
-        !pageNumber
-    ) {
-        return;
-    }
+        const openButton =
+            document.getElementById(
+                "easyBookOpen"
+            );
 
 
-    /* =================================================
-       菜單圖片
+        /*
+            如果不是 Menu 頁，
+            就直接停止。
 
-       如果你的圖片不是 1.jpg ~ 9.jpg，
-       只需要修改這裡。
-    ================================================= */
-
-    const menuPages = [
-
-        {
-            image: "../assets/menu/1.jpg",
-            alt: "Bar Easy Taichung Special Signature 新歡特色調酒菜單"
-        },
-
-        {
-            image: "../assets/menu/2.jpg",
-            alt: "Bar Easy Taichung Old Signature 舊愛特色調酒菜單"
-        },
-
-        {
-            image: "../assets/menu/3.jpg",
-            alt: "Bar Easy Taichung Classic 經典調酒菜單"
-        },
-
-        {
-            image: "../assets/menu/4.jpg",
-            alt: "Bar Easy Taichung Whisky 威士忌單杯與單瓶菜單"
-        },
-
-        {
-            image: "../assets/menu/5.jpg",
-            alt: "Bar Easy Taichung Bottle 酒類單杯與單瓶菜單"
-        },
-
-        {
-            image: "../assets/menu/6.jpg",
-            alt: "Bar Easy Taichung Classic 經典調酒第二頁"
-        },
-
-        {
-            image: "../assets/menu/7.jpg",
-            alt: "Bar Easy Taichung Soft Drink 無酒精飲品與 Beer 啤酒菜單"
-        },
-
-        {
-            image: "../assets/menu/8.jpg",
-            alt: "Bar Easy Taichung Food 主食披薩甜點菜單"
-        },
-
-        {
-            image: "../assets/menu/9.jpg",
-            alt: "Bar Easy Taichung Food 炸物與佐酒小點菜單"
+            所以這段 JS 放在全站 script.js
+            也沒問題。
+        */
+        if (
+            !book ||
+            !prevButton ||
+            !nextButton ||
+            !pageStatus
+        ) {
+            return;
         }
 
-    ];
+
+        /* ==================================================
+           菜單圖片
+
+           menu/index.html
+           所以圖片路徑是：
+
+           ../assets/menu/1.jpg
+
+           如果你的檔名不同，
+           只修改這裡。
+        ================================================== */
+
+        const menuPages = [
+
+            {
+                src:
+                    "../assets/menu/1.jpg",
+
+                alt:
+                    "Bar Easy Taichung 特色調酒菜單"
+            },
+
+            {
+                src:
+                    "../assets/menu/2.jpg",
+
+                alt:
+                    "Bar Easy Taichung 特色調酒菜單第二頁"
+            },
+
+            {
+                src:
+                    "../assets/menu/3.jpg",
+
+                alt:
+                    "Bar Easy Taichung 經典調酒菜單"
+            },
+
+            {
+                src:
+                    "../assets/menu/4.jpg",
+
+                alt:
+                    "Bar Easy Taichung Whisky 威士忌菜單"
+            },
+
+            {
+                src:
+                    "../assets/menu/5.jpg",
+
+                alt:
+                    "Bar Easy Taichung Bottle 酒類菜單"
+            },
+
+            {
+                src:
+                    "../assets/menu/6.jpg",
+
+                alt:
+                    "Bar Easy Taichung 經典調酒菜單第二頁"
+            },
+
+            {
+                src:
+                    "../assets/menu/7.jpg",
+
+                alt:
+                    "Bar Easy Taichung 無酒精飲品與啤酒菜單"
+            },
+
+            {
+                src:
+                    "../assets/menu/8.jpg",
+
+                alt:
+                    "Bar Easy Taichung 主食披薩與甜點菜單"
+            },
+
+            {
+                src:
+                    "../assets/menu/9.jpg",
+
+                alt:
+                    "Bar Easy Taichung 炸物與佐酒小點菜單"
+            }
+
+        ];
 
 
-    /* =================================================
-       狀態
-    ================================================= */
+        /* ==================================================
+           DESKTOP / MOBILE
+        ================================================== */
 
-    /*
-       Desktop：
-       0 = 封面
-       1 = 第 1、2 頁
-       2 = 第 3、4 頁
-       ...
-
-       Mobile：
-       0 = 封面
-       1 = 圖片 1
-       2 = 圖片 2
-       ...
-    */
-
-    let currentPosition = 0;
-
-    let previousPosition = 0;
+        const mobileQuery =
+            window.matchMedia(
+                "(max-width: 720px)"
+            );
 
 
-    /* 判斷是不是手機 */
-    function isMobile() {
-
-        return window.matchMedia(
-            "(max-width: 720px)"
-        ).matches;
-
-    }
+        let mobileMode =
+            mobileQuery.matches;
 
 
-    /* =================================================
-       封面
-    ================================================= */
+        /* ==================================================
+           STATE
+        ================================================== */
 
-    function renderCover(direction = "next") {
+        /*
+            Desktop：
 
-        menuBook.innerHTML = `
+            currentSheet = 已經翻過幾張紙
 
-            <div
-                class="menu-book-cover-wrap book-enter-${direction}"
-            >
+            0
+            = 封面還沒打開
+
+            1
+            = 封面翻開
+
+            2
+            = 第一張菜單紙翻開
+
+            ...
+
+        */
+
+        let currentSheet = 0;
+
+
+        /*
+            Mobile：
+
+            -1 = 封面
+
+             0 = 菜單第 1 頁
+             1 = 菜單第 2 頁
+             ...
+        */
+
+        let mobilePage = -1;
+
+
+        let isAnimating = false;
+
+
+        /* ==================================================
+           CREATE ELEMENT
+        ================================================== */
+
+        function createElement(
+            tag,
+            className
+        ) {
+
+            const element =
+                document.createElement(
+                    tag
+                );
+
+
+            if (className) {
+
+                element.className =
+                    className;
+
+            }
+
+
+            return element;
+
+        }
+
+
+        /* ==================================================
+           MENU IMAGE
+        ================================================== */
+
+        function createImagePage(
+            page
+        ) {
+
+            const wrapper =
+                createElement(
+                    "div",
+                    "easy-menu-image-page"
+                );
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                page.src;
+
+
+            image.alt =
+                page.alt;
+
+
+            image.loading =
+                "lazy";
+
+
+            image.decoding =
+                "async";
+
+
+            image.draggable =
+                false;
+
+
+            wrapper.appendChild(
+                image
+            );
+
+
+            return wrapper;
+
+        }
+
+
+        /* ==================================================
+           COVER FRONT
+        ================================================== */
+
+        function createCover() {
+
+            const cover =
+                createElement(
+                    "div",
+                    "easy-book-cover"
+                );
+
+
+            cover.innerHTML = `
 
                 <div
-                    class="menu-book-cover"
-                    id="bookCover"
-                    role="button"
-                    tabindex="0"
-                    aria-label="翻開 Bar Easy Taichung 菜單"
+                    class="easy-cover-content"
                 >
 
-                    <span class="menu-cover-spine"></span>
+                    <p
+                        class="easy-cover-small"
+                    >
+                        BAR EASY TAICHUNG
+                    </p>
 
-                    <div class="menu-cover-content">
 
-                        <p class="menu-cover-kicker">
-                            BAR EASY TAICHUNG
-                        </p>
+                    <h2
+                        class="easy-cover-title"
+                    >
+                        Take it
+                        <br>
+                        <em>Easy.</em>
+                    </h2>
 
-                        <h2 class="menu-cover-title">
-                            Take it<br>
-                            <em>Easy.</em>
-                        </h2>
 
-                        <span class="menu-cover-line"></span>
+                    <span
+                        class="easy-cover-divider"
+                    ></span>
 
-                        <p class="menu-cover-subtitle">
-                            COCKTAILS · WHISKY · FOOD
-                        </p>
 
-                        <p class="menu-cover-tagline">
-                            Menu Book · 2026
-                        </p>
+                    <p
+                        class="easy-cover-type"
+                    >
+                        COCKTAILS · WHISKY · FOOD
+                    </p>
 
-                    </div>
+
+                    <p
+                        class="easy-cover-year"
+                    >
+                        Menu Book · 2026
+                    </p>
 
                 </div>
 
-            </div>
-
-        `;
+            `;
 
 
-        pageNumber.textContent =
-            "MENU BOOK";
+            return cover;
+
+        }
 
 
-        prevButton.disabled = true;
+        /* ==================================================
+           INSIDE COVER
+        ================================================== */
 
-        nextButton.disabled = false;
+        function createInsideCover() {
+
+            const inside =
+                createElement(
+                    "div",
+                    "easy-inside-cover"
+                );
 
 
-        if (openBookButton) {
+            inside.innerHTML = `
 
-            openBookButton.classList.remove(
-                "is-hidden"
+                <strong>
+                    Welcome to Easy.
+                </strong>
+
+                <span></span>
+
+                <p>
+                    不必先懂酒。
+                    告訴我們你喜歡的味道，
+                    慢慢找到今晚想喝的一杯。
+                </p>
+
+            `;
+
+
+            return inside;
+
+        }
+
+
+        /* ==================================================
+           END PAGE
+        ================================================== */
+
+        function createEndPage() {
+
+            const end =
+                createElement(
+                    "div",
+                    "easy-end-page"
+                );
+
+
+            end.innerHTML = `
+
+                <strong>
+                    Take it Easy.
+                </strong>
+
+                <span>
+                    SEE YOU TONIGHT
+                </span>
+
+            `;
+
+
+            return end;
+
+        }
+
+
+        /* ==================================================
+           CREATE FACE
+        ================================================== */
+
+        function createFace(
+            type,
+            content
+        ) {
+
+            const face =
+                createElement(
+                    "div",
+                    `easy-book-face easy-book-${type}`
+                );
+
+
+            face.appendChild(
+                content
+            );
+
+
+            return face;
+
+        }
+
+
+        /* ==================================================
+           CREATE SHEET
+        ================================================== */
+
+        function createSheet(
+            frontContent,
+            backContent,
+            index
+        ) {
+
+            const sheet =
+                createElement(
+                    "div",
+                    "easy-book-sheet"
+                );
+
+
+            sheet.dataset.index =
+                String(index);
+
+
+            const front =
+                createFace(
+                    "front",
+                    frontContent
+                );
+
+
+            const back =
+                createFace(
+                    "back",
+                    backContent
+                );
+
+
+            sheet.appendChild(
+                front
+            );
+
+
+            sheet.appendChild(
+                back
+            );
+
+
+            return sheet;
+
+        }
+
+
+        /* ==================================================
+           BUILD DESKTOP BOOK
+        ================================================== */
+
+        function buildDesktopBook() {
+
+            book.innerHTML = "";
+
+
+            currentSheet = 0;
+
+
+            /*
+                Sheet 0
+                = 封面 + 封面內頁
+            */
+
+            const coverSheet =
+                createSheet(
+
+                    createCover(),
+
+                    createInsideCover(),
+
+                    0
+                );
+
+
+            book.appendChild(
+                coverSheet
+            );
+
+
+            /*
+                接下來：
+
+                Front:
+                1 / 3 / 5 / 7 / 9
+
+                Back:
+                2 / 4 / 6 / 8 / END
+
+                翻頁後：
+
+                左頁會看到 back
+                右頁會看到下一張 front
+            */
+
+            let sheetIndex = 1;
+
+
+            for (
+                let i = 0;
+                i < menuPages.length;
+                i += 2
+            ) {
+
+                const frontPage =
+                    createImagePage(
+                        menuPages[i]
+                    );
+
+
+                let backPage;
+
+
+                if (
+                    menuPages[i + 1]
+                ) {
+
+                    backPage =
+                        createImagePage(
+                            menuPages[
+                                i + 1
+                            ]
+                        );
+
+                } else {
+
+                    backPage =
+                        createEndPage();
+
+                }
+
+
+                const sheet =
+                    createSheet(
+                        frontPage,
+                        backPage,
+                        sheetIndex
+                    );
+
+
+                book.appendChild(
+                    sheet
+                );
+
+
+                sheetIndex++;
+
+            }
+
+
+            /*
+                如果最後不是 End，
+                再做一本後封概念。
+
+                我們現在有 9 頁，
+                所以上面最後 back 已經是 End。
+            */
+
+
+            updateDesktopBook();
+
+        }
+
+
+        /* ==================================================
+           DESKTOP SHEETS
+        ================================================== */
+
+        function getSheets() {
+
+            return Array.from(
+
+                book.querySelectorAll(
+                    ".easy-book-sheet"
+                )
+
             );
 
         }
 
 
-        const cover =
-            document.getElementById("bookCover");
+        /* ==================================================
+           UPDATE DESKTOP
+        ================================================== */
+
+        function updateDesktopBook() {
+
+            const sheets =
+                getSheets();
 
 
-        /* 點封面打開 */
-        if (cover) {
-
-            cover.addEventListener(
-                "click",
-                function () {
-
-                    goNext();
-
-                }
-            );
+            const total =
+                sheets.length;
 
 
-            cover.addEventListener(
-                "keydown",
-                function (event) {
+            sheets.forEach(
+                function (
+                    sheet,
+                    index
+                ) {
 
-                    if (
-                        event.key === "Enter" ||
-                        event.key === " "
-                    ) {
+                    const flipped =
+                        index <
+                        currentSheet;
 
-                        event.preventDefault();
 
-                        goNext();
+                    sheet.classList.toggle(
+                        "is-flipped",
+                        flipped
+                    );
+
+
+                    /*
+                        Z-index：
+
+                        還沒翻：
+                        前面的紙在最上方。
+
+                        已經翻：
+                        越晚翻的紙
+                        越靠左側上方。
+                    */
+
+                    if (flipped) {
+
+                        sheet.style.zIndex =
+                            String(
+                                index + 1
+                            );
+
+                    } else {
+
+                        sheet.style.zIndex =
+                            String(
+                                total +
+                                (
+                                    total -
+                                    index
+                                )
+                            );
 
                     }
 
                 }
             );
 
-        }
 
-    }
+            book.classList.toggle(
 
+                "is-closed",
 
-    /* =================================================
-       Desktop 雙頁
-    ================================================= */
+                currentSheet === 0
 
-    function renderDesktopSpread(direction) {
-
-        const spreadIndex =
-            currentPosition - 1;
-
-
-        const leftIndex =
-            spreadIndex * 2;
-
-
-        const rightIndex =
-            leftIndex + 1;
-
-
-        const leftPage =
-            menuPages[leftIndex];
-
-
-        const rightPage =
-            menuPages[rightIndex];
-
-
-        let rightPageHTML = "";
-
-
-        if (rightPage) {
-
-            rightPageHTML = `
-
-                <div class="menu-page menu-page-right">
-
-                    <img
-                        src="${rightPage.image}"
-                        alt="${rightPage.alt}"
-                        loading="lazy"
-                        decoding="async"
-                    >
-
-                </div>
-
-            `;
-
-        } else {
-
-            /* 奇數頁最後補一個漂亮尾頁 */
-
-            rightPageHTML = `
-
-                <div
-                    class="
-                        menu-page
-                        menu-page-right
-                        menu-page-empty
-                    "
-                >
-
-                    <strong>
-                        Take it Easy.
-                    </strong>
-
-                    <span>
-                        SEE YOU TONIGHT
-                    </span>
-
-                </div>
-
-            `;
-
-        }
-
-
-        menuBook.innerHTML = `
-
-            <div
-                class="
-                    menu-spread
-                    book-enter-${direction}
-                "
-            >
-
-                <div class="menu-page menu-page-left">
-
-                    <img
-                        src="${leftPage.image}"
-                        alt="${leftPage.alt}"
-                        loading="lazy"
-                        decoding="async"
-                    >
-
-                </div>
-
-                ${rightPageHTML}
-
-            </div>
-
-        `;
-
-
-        const displayLeft =
-            leftIndex + 1;
-
-
-        const displayRight =
-            Math.min(
-                rightIndex + 1,
-                menuPages.length
             );
 
 
-        if (
-            displayLeft === displayRight
-        ) {
+            book.classList.toggle(
 
-            pageNumber.textContent =
-                `PAGE ${displayLeft}`;
+                "is-finished",
 
-        } else {
+                currentSheet === total
 
-            pageNumber.textContent =
-                `PAGE ${displayLeft} — ${displayRight}`;
-
-        }
-
-
-        const maxSpread =
-            Math.ceil(
-                menuPages.length / 2
             );
 
 
-        prevButton.disabled = false;
+            prevButton.disabled =
+                currentSheet === 0;
 
 
-        nextButton.disabled =
-            currentPosition >= maxSpread;
+            nextButton.disabled =
+                currentSheet === total;
 
 
-        if (openBookButton) {
+            if (openButton) {
 
-            openBookButton.classList.add(
-                "is-hidden"
-            );
+                openButton.classList.toggle(
 
-        }
+                    "is-hidden",
 
-    }
+                    currentSheet !== 0
 
-
-    /* =================================================
-       Mobile 單頁
-    ================================================= */
-
-    function renderMobilePage(direction) {
-
-        const pageIndex =
-            currentPosition - 1;
-
-
-        const page =
-            menuPages[pageIndex];
-
-
-        menuBook.innerHTML = `
-
-            <div
-                class="
-                    menu-spread
-                    book-enter-${direction}
-                "
-            >
-
-                <div
-                    class="
-                        menu-page
-                        menu-page-right
-                        mobile-visible
-                    "
-                >
-
-                    <img
-                        src="${page.image}"
-                        alt="${page.alt}"
-                        loading="lazy"
-                        decoding="async"
-                    >
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        pageNumber.textContent =
-            `PAGE ${pageIndex + 1} / ${menuPages.length}`;
-
-
-        prevButton.disabled = false;
-
-
-        nextButton.disabled =
-            currentPosition >= menuPages.length;
-
-
-        if (openBookButton) {
-
-            openBookButton.classList.add(
-                "is-hidden"
-            );
-
-        }
-
-    }
-
-
-    /* =================================================
-       Render
-    ================================================= */
-
-    function renderBook() {
-
-        let direction =
-            currentPosition >= previousPosition
-                ? "next"
-                : "prev";
-
-
-        if (currentPosition === 0) {
-
-            renderCover(direction);
-
-            return;
-
-        }
-
-
-        if (isMobile()) {
-
-            renderMobilePage(direction);
-
-        } else {
-
-            renderDesktopSpread(direction);
-
-        }
-
-    }
-
-
-    /* =================================================
-       下一頁
-    ================================================= */
-
-    function goNext() {
-
-        previousPosition =
-            currentPosition;
-
-
-        if (isMobile()) {
-
-            if (
-                currentPosition <
-                menuPages.length
-            ) {
-
-                currentPosition++;
-
-            }
-
-        } else {
-
-            const maxSpread =
-                Math.ceil(
-                    menuPages.length / 2
                 );
 
+            }
+
+
+            updateDesktopStatus();
+
+        }
+
+
+        /* ==================================================
+           DESKTOP PAGE STATUS
+        ================================================== */
+
+        function updateDesktopStatus() {
 
             if (
-                currentPosition <
-                maxSpread
+                currentSheet === 0
             ) {
 
-                currentPosition++;
+                pageStatus.textContent =
+                    "MENU BOOK";
+
+                return;
 
             }
 
-        }
 
+            const totalMenuPages =
+                menuPages.length;
 
-        renderBook();
-
-    }
-
-
-    /* =================================================
-       上一頁
-    ================================================= */
-
-    function goPrev() {
-
-        previousPosition =
-            currentPosition;
-
-
-        if (
-            currentPosition > 0
-        ) {
-
-            currentPosition--;
-
-        }
-
-
-        renderBook();
-
-    }
-
-
-    /* =================================================
-       按鈕
-    ================================================= */
-
-    nextButton.addEventListener(
-        "click",
-        goNext
-    );
-
-
-    prevButton.addEventListener(
-        "click",
-        goPrev
-    );
-
-
-    if (openBookButton) {
-
-        openBookButton.addEventListener(
-            "click",
-            function () {
-
-                if (
-                    currentPosition === 0
-                ) {
-
-                    goNext();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =================================================
-       鍵盤 ← →
-    ================================================= */
-
-    document.addEventListener(
-        "keydown",
-        function (event) {
 
             /*
-                避免使用者正在 input 時
-                被鍵盤翻頁
+                打開封面時：
+
+                左 = Inside Cover
+                右 = Menu page 1
             */
 
-            const active =
-                document.activeElement;
+            if (
+                currentSheet === 1
+            ) {
+
+                pageStatus.textContent =
+                    `PAGE 1 / ${totalMenuPages}`;
+
+                return;
+
+            }
+
+
+            /*
+                currentSheet 2
+
+                已經翻過：
+                cover + sheet 1
+
+                左頁：
+                menu 2
+
+                右頁：
+                menu 3
+            */
+
+            const leftPage =
+                (
+                    currentSheet - 1
+                ) * 2;
+
+
+            const rightPage =
+                leftPage + 1;
 
 
             if (
-                active &&
-                (
-                    active.tagName === "INPUT" ||
-                    active.tagName === "TEXTAREA"
-                )
+                leftPage >
+                totalMenuPages
             ) {
+
+                pageStatus.textContent =
+                    "END";
 
                 return;
 
@@ -705,160 +883,947 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             if (
-                event.key === "ArrowRight"
+                rightPage >
+                totalMenuPages
             ) {
 
-                goNext();
+                pageStatus.textContent =
+                    `PAGE ${leftPage} / ${totalMenuPages}`;
 
+                return;
+
+            }
+
+
+            pageStatus.textContent =
+                `PAGE ${leftPage} — ${rightPage}`;
+
+        }
+
+
+        /* ==================================================
+           TURN NEXT DESKTOP
+        ================================================== */
+
+        function desktopNext() {
+
+            if (isAnimating) {
+                return;
+            }
+
+
+            const sheets =
+                getSheets();
+
+
+            if (
+                currentSheet >=
+                sheets.length
+            ) {
+
+                return;
+
+            }
+
+
+            const target =
+                sheets[
+                    currentSheet
+                ];
+
+
+            isAnimating = true;
+
+
+            /*
+                提升正在翻的紙
+            */
+
+            target.style.zIndex =
+                "999";
+
+
+            target.classList.add(
+                "is-turning"
+            );
+
+
+            /*
+                開始翻頁
+            */
+
+            target.classList.add(
+                "is-flipped"
+            );
+
+
+            currentSheet++;
+
+
+            /*
+                讓動畫完成後
+                重新整理正常 z-index
+            */
+
+            window.setTimeout(
+                function () {
+
+                    target.classList.remove(
+                        "is-turning"
+                    );
+
+
+                    isAnimating = false;
+
+
+                    updateDesktopBook();
+
+                },
+
+                950
+            );
+
+
+            /*
+                狀態可以先更新
+            */
+
+            book.classList.remove(
+                "is-closed"
+            );
+
+
+            updateDesktopStatus();
+
+
+            prevButton.disabled =
+                false;
+
+        }
+
+
+        /* ==================================================
+           TURN PREVIOUS DESKTOP
+        ================================================== */
+
+        function desktopPrev() {
+
+            if (isAnimating) {
+                return;
             }
 
 
             if (
-                event.key === "ArrowLeft"
+                currentSheet <= 0
             ) {
 
-                goPrev();
+                return;
 
             }
 
+
+            const sheets =
+                getSheets();
+
+
+            currentSheet--;
+
+
+            const target =
+                sheets[
+                    currentSheet
+                ];
+
+
+            isAnimating = true;
+
+
+            target.style.zIndex =
+                "999";
+
+
+            target.classList.add(
+                "is-turning"
+            );
+
+
+            /*
+                從左翻回右
+            */
+
+            target.classList.remove(
+                "is-flipped"
+            );
+
+
+            book.classList.remove(
+                "is-finished"
+            );
+
+
+            window.setTimeout(
+                function () {
+
+                    target.classList.remove(
+                        "is-turning"
+                    );
+
+
+                    isAnimating = false;
+
+
+                    updateDesktopBook();
+
+                },
+
+                950
+            );
+
+
+            updateDesktopStatus();
+
+
+            nextButton.disabled =
+                false;
+
         }
-    );
 
 
-    /* =================================================
-       手機 Swipe
-    ================================================= */
+        /* ==================================================
+           MOBILE
 
-    let touchStartX = 0;
+           手機不做真正左右雙書頁，
+           因為字會太小。
 
-    let touchEndX = 0;
+           改成：
+           一頁一頁 3D 翻動。
+
+           仍然是 rotateY 3D。
+        ================================================== */
+
+        function buildMobileBook() {
+
+            book.innerHTML = "";
 
 
-    menuBook.addEventListener(
-        "touchstart",
-        function (event) {
+            mobilePage = -1;
 
-            touchStartX =
-                event.changedTouches[0]
-                    .screenX;
 
-        },
-        {
-            passive: true
+            renderMobilePage(
+                "none"
+            );
+
         }
-    );
 
 
-    menuBook.addEventListener(
-        "touchend",
-        function (event) {
+        /* ==================================================
+           MOBILE COVER
+        ================================================== */
 
-            touchEndX =
-                event.changedTouches[0]
-                    .screenX;
-
-
-            handleSwipe();
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    function handleSwipe() {
-
-        const distance =
-            touchEndX -
-            touchStartX;
-
-
-        /*
-            小於 45px 不處理，
-            避免普通點擊被當翻頁
-        */
-
-        if (
-            Math.abs(distance) < 45
+        function renderMobilePage(
+            direction
         ) {
 
-            return;
-
-        }
+            book.innerHTML = "";
 
 
-        /*
-            左滑 = 下一頁
-        */
-
-        if (distance < 0) {
-
-            goNext();
-
-        }
+            const sheet =
+                createElement(
+                    "div",
+                    "easy-book-sheet easy-mobile-sheet"
+                );
 
 
-        /*
-            右滑 = 上一頁
-        */
+            /*
+                Mobile sheet
+                使用 front 即可。
 
-        if (distance > 0) {
+                翻頁動畫在 JS 控制。
+            */
 
-            goPrev();
-
-        }
-
-    }
-
-
-    /* =================================================
-       桌機 / 手機尺寸切換時重新計算
-    ================================================= */
-
-    let lastMobileState =
-        isMobile();
-
-
-    window.addEventListener(
-        "resize",
-        function () {
-
-            const newMobileState =
-                isMobile();
+            const front =
+                createElement(
+                    "div",
+                    "easy-book-face easy-book-front"
+                );
 
 
             if (
-                newMobileState !==
-                lastMobileState
+                mobilePage === -1
             ) {
 
-                lastMobileState =
-                    newMobileState;
+                front.appendChild(
+                    createCover()
+                );
+
+            } else {
+
+                front.appendChild(
+                    createImagePage(
+                        menuPages[
+                            mobilePage
+                        ]
+                    )
+                );
+
+            }
+
+
+            sheet.appendChild(
+                front
+            );
+
+
+            /*
+                手機只有單頁，
+                CSS 覆寫成 width 100%
+            */
+
+            sheet.style.zIndex =
+                "10";
+
+
+            /*
+                新頁進場
+            */
+
+            if (
+                direction === "next"
+            ) {
+
+                sheet.style.transform =
+                    "rotateY(70deg)";
+
+                sheet.style.opacity =
+                    "0";
+
+            }
+
+
+            if (
+                direction === "prev"
+            ) {
+
+                sheet.style.transform =
+                    "rotateY(-70deg)";
+
+                sheet.style.opacity =
+                    "0";
+
+            }
+
+
+            book.appendChild(
+                sheet
+            );
+
+
+            requestAnimationFrame(
+                function () {
+
+                    requestAnimationFrame(
+                        function () {
+
+                            sheet.style.transition =
+                                "transform 650ms cubic-bezier(.22,.72,.24,1), opacity 400ms ease";
+
+
+                            sheet.style.transform =
+                                "rotateY(0deg)";
+
+
+                            sheet.style.opacity =
+                                "1";
+
+                        }
+                    );
+
+                }
+            );
+
+
+            updateMobileStatus();
+
+        }
+
+
+        /* ==================================================
+           MOBILE STATUS
+        ================================================== */
+
+        function updateMobileStatus() {
+
+            prevButton.disabled =
+                mobilePage === -1;
+
+
+            nextButton.disabled =
+                mobilePage >=
+                menuPages.length - 1;
+
+
+            if (
+                mobilePage === -1
+            ) {
+
+                pageStatus.textContent =
+                    "MENU BOOK";
+
+
+                if (openButton) {
+
+                    openButton.classList.remove(
+                        "is-hidden"
+                    );
+
+                }
+
+            } else {
+
+                pageStatus.textContent =
+                    `PAGE ${mobilePage + 1} / ${menuPages.length}`;
+
+
+                if (openButton) {
+
+                    openButton.classList.add(
+                        "is-hidden"
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        /* ==================================================
+           MOBILE NEXT
+        ================================================== */
+
+        function mobileNext() {
+
+            if (isAnimating) {
+                return;
+            }
+
+
+            if (
+                mobilePage >=
+                menuPages.length - 1
+            ) {
+
+                return;
+
+            }
+
+
+            const oldSheet =
+                book.querySelector(
+                    ".easy-mobile-sheet"
+                );
+
+
+            isAnimating = true;
+
+
+            /*
+                舊頁向左翻走
+            */
+
+            if (oldSheet) {
+
+                oldSheet.style.transition =
+                    "transform 500ms cubic-bezier(.22,.72,.24,1), opacity 350ms ease";
+
+
+                oldSheet.style.transform =
+                    "rotateY(-85deg)";
+
+
+                oldSheet.style.opacity =
+                    "0";
+
+            }
+
+
+            window.setTimeout(
+                function () {
+
+                    mobilePage++;
+
+
+                    renderMobilePage(
+                        "next"
+                    );
+
+
+                    isAnimating = false;
+
+                },
+
+                430
+            );
+
+        }
+
+
+        /* ==================================================
+           MOBILE PREVIOUS
+        ================================================== */
+
+        function mobilePrev() {
+
+            if (isAnimating) {
+                return;
+            }
+
+
+            if (
+                mobilePage <= -1
+            ) {
+
+                return;
+
+            }
+
+
+            const oldSheet =
+                book.querySelector(
+                    ".easy-mobile-sheet"
+                );
+
+
+            isAnimating = true;
+
+
+            if (oldSheet) {
+
+                oldSheet.style.transition =
+                    "transform 500ms cubic-bezier(.22,.72,.24,1), opacity 350ms ease";
+
+
+                oldSheet.style.transform =
+                    "rotateY(85deg)";
+
+
+                oldSheet.style.opacity =
+                    "0";
+
+            }
+
+
+            window.setTimeout(
+                function () {
+
+                    mobilePage--;
+
+
+                    renderMobilePage(
+                        "prev"
+                    );
+
+
+                    isAnimating = false;
+
+                },
+
+                430
+            );
+
+        }
+
+
+        /* ==================================================
+           NEXT
+        ================================================== */
+
+        function nextPage() {
+
+            if (mobileMode) {
+
+                mobileNext();
+
+            } else {
+
+                desktopNext();
+
+            }
+
+        }
+
+
+        /* ==================================================
+           PREVIOUS
+        ================================================== */
+
+        function previousPage() {
+
+            if (mobileMode) {
+
+                mobilePrev();
+
+            } else {
+
+                desktopPrev();
+
+            }
+
+        }
+
+
+        /* ==================================================
+           BUTTON EVENTS
+        ================================================== */
+
+        nextButton.addEventListener(
+            "click",
+            nextPage
+        );
+
+
+        prevButton.addEventListener(
+            "click",
+            previousPage
+        );
+
+
+        if (openButton) {
+
+            openButton.addEventListener(
+                "click",
+                nextPage
+            );
+
+        }
+
+
+        /* ==================================================
+           CLICK BOOK
+
+           Desktop:
+
+           點右頁 → 下一頁
+           點左頁 → 上一頁
+
+           封面 → 打開
+        ================================================== */
+
+        book.addEventListener(
+            "click",
+            function (event) {
+
+                /*
+                    手機直接點頁面
+                    不自動翻，
+                    避免誤觸。
+                */
+
+                if (mobileMode) {
+
+                    if (
+                        mobilePage === -1
+                    ) {
+
+                        nextPage();
+
+                    }
+
+                    return;
+
+                }
+
+
+                const rect =
+                    book.getBoundingClientRect();
+
+
+                const clickX =
+                    event.clientX -
+                    rect.left;
 
 
                 /*
-                    模式切換後回封面，
-                    避免 Desktop spread index
-                    跟手機 index 混在一起。
+                    封面狀態
                 */
 
-                previousPosition = 0;
+                if (
+                    currentSheet === 0
+                ) {
 
-                currentPosition = 0;
+                    nextPage();
 
-                renderBook();
+                    return;
+
+                }
+
+
+                /*
+                    右半 → 下一頁
+                */
+
+                if (
+                    clickX >
+                    rect.width / 2
+                ) {
+
+                    nextPage();
+
+                }
+
+
+                /*
+                    左半 → 上一頁
+                */
+
+                else {
+
+                    previousPage();
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           KEYBOARD
+        ================================================== */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                const active =
+                    document.activeElement;
+
+
+                /*
+                    使用者正在輸入文字時
+                    不處理鍵盤翻頁
+                */
+
+                if (
+                    active &&
+                    (
+                        active.tagName ===
+                        "INPUT" ||
+
+                        active.tagName ===
+                        "TEXTAREA" ||
+
+                        active.tagName ===
+                        "SELECT"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    event.key ===
+                    "ArrowRight"
+                ) {
+
+                    nextPage();
+
+                }
+
+
+                if (
+                    event.key ===
+                    "ArrowLeft"
+                ) {
+
+                    previousPage();
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           TOUCH SWIPE
+        ================================================== */
+
+        let touchStartX = 0;
+
+        let touchStartY = 0;
+
+
+        book.addEventListener(
+            "touchstart",
+            function (event) {
+
+                touchStartX =
+                    event.changedTouches[0]
+                        .clientX;
+
+
+                touchStartY =
+                    event.changedTouches[0]
+                        .clientY;
+
+            },
+
+            {
+                passive: true
+            }
+        );
+
+
+        book.addEventListener(
+            "touchend",
+            function (event) {
+
+                const endX =
+                    event.changedTouches[0]
+                        .clientX;
+
+
+                const endY =
+                    event.changedTouches[0]
+                        .clientY;
+
+
+                const deltaX =
+                    endX -
+                    touchStartX;
+
+
+                const deltaY =
+                    endY -
+                    touchStartY;
+
+
+                /*
+                    如果上下移動比左右還大，
+                    當作使用者正在捲動網站。
+                */
+
+                if (
+                    Math.abs(deltaY) >
+                    Math.abs(deltaX)
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                    太短不處理
+                */
+
+                if (
+                    Math.abs(deltaX) <
+                    45
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                    左滑
+                    = 下一頁
+                */
+
+                if (
+                    deltaX < 0
+                ) {
+
+                    nextPage();
+
+                }
+
+
+                /*
+                    右滑
+                    = 上一頁
+                */
+
+                else {
+
+                    previousPage();
+
+                }
+
+            },
+
+            {
+                passive: true
+            }
+        );
+
+
+        /* ==================================================
+           RESPONSIVE SWITCH
+        ================================================== */
+
+        function rebuildBook() {
+
+            mobileMode =
+                mobileQuery.matches;
+
+
+            isAnimating =
+                false;
+
+
+            if (mobileMode) {
+
+                buildMobileBook();
+
+            } else {
+
+                buildDesktopBook();
 
             }
 
         }
-    );
 
 
-    /* =================================================
-       初次顯示
-    ================================================= */
+        /*
+            Chrome / Safari
+        */
 
-    renderBook();
+        if (
+            mobileQuery.addEventListener
+        ) {
 
-});
+            mobileQuery.addEventListener(
+                "change",
+                rebuildBook
+            );
+
+        }
+
+
+        /*
+            舊 Safari
+        */
+
+        else if (
+            mobileQuery.addListener
+        ) {
+
+            mobileQuery.addListener(
+                rebuildBook
+            );
+
+        }
+
+
+        /* ==================================================
+           INIT
+        ================================================== */
+
+        rebuildBook();
+
+    }
+);

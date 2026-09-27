@@ -968,79 +968,91 @@
                 </section>
             </div>
         </div>
-        <section class="menu-book-section">
+        <section class="easy-menu-book-section">
 
-            <div class="menu-book-heading">
+    <div class="easy-menu-heading">
 
-                <p class="eyebrow">BAR EASY MENU</p>
+        <p class="eyebrow">BAR EASY MENU</p>
 
-                <h2>今晚，想喝點什麼？</h2>
+        <h2>今晚，想喝點什麼？</h2>
 
-                <p class="menu-book-intro">
-                    翻開 Bar Easy 的菜單，從特色調酒、經典調酒，
-                    到 Whisky、啤酒與餐點，慢慢找一杯今晚想喝的。
-                </p>
+        <p class="easy-menu-intro">
+            翻開 Bar Easy 的菜單，
+            從特色調酒、經典調酒，到 Whisky、啤酒與餐點，
+            慢慢找一杯今晚想喝的。
+        </p>
 
+    </div>
+
+
+    <div class="easy-book-layout">
+
+        <!-- 上一頁 -->
+        <button
+            class="easy-book-button easy-book-prev"
+            id="easyBookPrev"
+            type="button"
+            aria-label="上一頁"
+        >
+            ←
+        </button>
+
+
+        <!-- 3D 書本 -->
+        <div class="easy-book-scene">
+
+            <div
+                class="easy-book is-closed"
+                id="easyBook"
+                aria-label="Bar Easy Taichung 菜單"
+            >
+                <!-- JavaScript 自動建立所有書頁 -->
             </div>
 
-
-            <!-- 書本主體 -->
-            <div class="menu-book-stage">
-
-                <!-- 上一頁 -->
-                <button class="book-control book-prev" id="menuPrev" type="button" aria-label="上一頁">
-                    <span aria-hidden="true">←</span>
-                </button>
+        </div>
 
 
-                <!-- 書 -->
-                <div class="menu-book" id="menuBook">
+        <!-- 下一頁 -->
+        <button
+            class="easy-book-button easy-book-next"
+            id="easyBookNext"
+            type="button"
+            aria-label="下一頁"
+        >
+            →
+        </button>
 
-                    <!-- JS 會自動把封面 / 菜單插入這裡 -->
-
-                </div>
-
-
-                <!-- 下一頁 -->
-                <button class="book-control book-next" id="menuNext" type="button" aria-label="下一頁">
-                    <span aria-hidden="true">→</span>
-                </button>
-
-            </div>
+    </div>
 
 
-            <!-- 頁碼 -->
-            <div class="menu-book-footer">
+    <div class="easy-book-status">
 
-                <button class="menu-open-book" id="menuOpenBook" type="button">
-                    翻開菜單
-                </button>
+        <button
+            id="easyBookOpen"
+            class="easy-book-open"
+            type="button"
+        >
+            翻開菜單
+        </button>
 
-                <p class="menu-page-number" id="menuPageNumber" aria-live="polite">
-                    MENU BOOK
-                </p>
+        <span id="easyBookPage">
+            MENU BOOK
+        </span>
 
-            </div>
-
-
-            <!-- 手機提示 -->
-            <p class="menu-swipe-hint">
-                手機可左右滑動翻頁
-            </p>
+    </div>
 
 
-            <!-- 菜單說明 -->
-            <div class="menu-book-note">
+    <p class="easy-book-mobile-hint">
+        左右滑動翻頁
+    </p>
 
-                <p>
-                    每人低消一杯飲品。
-                    菜單內容、價格及供應品項可能依現場調整，
-                    實際內容請以店內公告為準。
-                </p>
 
-            </div>
+    <p class="easy-menu-notice">
+        每人低消一杯飲品。菜單內容、價格及供應品項可能調整，
+        實際內容請以店內現場為準。
+    </p>
 
-        </section>
+</section>
         <dialog id="menu-dialog" aria-labelledby="menu-dialog-title">
             <div class="dialog-bar">
                 <h2 id="menu-dialog-title">原始酒單</h2><button type="button" id="dialog-close" aria-label="關閉酒單圖片">關閉
