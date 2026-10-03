@@ -3889,3 +3889,33 @@ th:first-child {
 .easy-book::after {
     transition: opacity 0.4s ease;
 }
+/* SEO content v1: reuse the existing journal cards and reading layout. */
+.journal-card h2 {
+    font-family: var(--cn);
+    font-size: 1.45rem;
+    line-height: 1.65;
+    margin-top: 12px;
+}
+.journal-card .journal-date { font-size: .8125rem; margin-top: 10px; }
+.article-body { min-width: 0; overflow-wrap: break-word; }
+.article-body .table-scroll { border: 1px solid var(--line); }
+.article-body .table-scroll:focus-visible { outline-offset: 3px; }
+.article-sources ul { font-size: .9375rem; }
+.menu-reading-links { width: min(1280px, calc(100% - 112px)); margin: 24px auto 0; color: var(--muted); font-size: .9375rem; }
+.menu-reading-links a { text-decoration: underline; text-decoration-color: var(--gold); }
+@media (max-width: 1190px) { .menu-reading-links { width: calc(100% - 72px); } }
+@media (max-width: 980px) { .journal-card h2 { font-size: 1.25rem; } }
+@media (max-width: 720px) {
+    .journal-card h2 { font-size: 1.5rem; }
+    .menu-reading-links { width: calc(100% - 40px); }
+    .article-toc { overflow-wrap: anywhere; }
+}
+@media (max-width: 380px) {
+    .header-inner { gap: 8px; }
+    .brand.brand-logo { gap: 8px; }
+    .brand.brand-logo img { width: 40px; height: 40px; }
+    .brand.brand-logo .brand-text { font-size: 1.5rem; }
+    .brand.brand-logo small { font-size: .625rem; }
+    .header-book { gap: 6px; padding-inline: 8px; font-size: .75rem; }
+    .nav-menu { flex-shrink: 0; }
+}

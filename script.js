@@ -345,6 +345,10 @@ document.addEventListener(
             image.draggable =
                 false;
 
+            // Intrinsic size reserves the menu image ratio before decoding.
+            image.width = 750;
+            image.height = 1235;
+
 
             wrapper.appendChild(
                 image
